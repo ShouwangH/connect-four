@@ -1,17 +1,22 @@
-type GameState = {
+export type GameState = {
     currentPlayer: Player
     board: string[]
     winner: Player | undefined
+    id:string
 }
 
 type Player = 'red' | 'yellow'
 
-
-
 export const initialGameState: GameState = {
     currentPlayer: 'red',
     winner: undefined,
-    board: Array(42).fill('none')
+    board: Array(42).fill('none'),
+    id: ""
+}
+
+export function createGame(): GameState {
+    const idinitialGameState = {...initialGameState, id:crypto.randomUUID()}
+    return idinitialGameState
 }
 
 export function makeMove(position: number, gameState: GameState): GameState {
@@ -24,7 +29,6 @@ export function makeMove(position: number, gameState: GameState): GameState {
     for (let i = 5 + drop * 6; i >= drop * 6; i--) {
         if (currentGS.board[i] === 'none') {
             currentGS.board[i] = currentGS.currentPlayer
-            console.log(i)
             currentGS = checkWin(currentGS)
             currentGS.currentPlayer = (gameState.currentPlayer == 'red') ? 'yellow' : 'red'
             return currentGS
