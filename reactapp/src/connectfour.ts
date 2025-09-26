@@ -1,21 +1,21 @@
 export type GameState = {
     currentPlayer: Player
     board: string[]
-    winner: Player | null
-    id:string
+    winner: Player | null | 'Tie'
+    id: string
 }
 
-type Player = 'red' | 'yellow'
+type Player = 'Red' | 'Yellow'
 
 export const initialGameState: GameState = {
-    currentPlayer: 'red',
+    currentPlayer: 'Red',
     winner: null,
     board: Array(42).fill('none'),
     id: ""
 }
 
 export function createGame(): GameState {
-    const idinitialGameState = {...initialGameState, id:crypto.randomUUID()}
+    const idinitialGameState = { ...initialGameState, id: crypto.randomUUID() }
     return idinitialGameState
 }
 
@@ -30,7 +30,7 @@ export function makeMove(position: number, gameState: GameState): GameState {
         if (currentGS.board[i] === 'none') {
             currentGS.board[i] = currentGS.currentPlayer
             currentGS = checkWin(currentGS)
-            currentGS.currentPlayer = (gameState.currentPlayer == 'red') ? 'yellow' : 'red'
+            currentGS.currentPlayer = (gameState.currentPlayer == 'Red') ? 'Yellow' : 'Red'
             return currentGS
         }
     }
@@ -40,11 +40,17 @@ export function makeMove(position: number, gameState: GameState): GameState {
 
 function checkWin(gameState: GameState): GameState {
     let currentGS = structuredClone(gameState)
-    if (checkDiagonalLeft(gameState) || checkDiagonalRight(gameState) ||
-        checkHorizontal(gameState) || checkVertical(gameState)) {
-        currentGS.winner = gameState.currentPlayer
+    if (currentGS.board.find(e => e == 'none')) {
+        if (checkDiagonalLeft(gameState) || checkDiagonalRight(gameState) ||
+            checkHorizontal(gameState) || checkVertical(gameState)) {
+            currentGS.winner = gameState.currentPlayer
+        }
+        return currentGS
+    } else {
+        currentGS.winner = "Tie"
+        return currentGS
     }
-    return currentGS
+
 
 }
 

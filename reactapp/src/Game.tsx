@@ -1,6 +1,7 @@
 import './App.css'
 import { type GameState } from "./connectfour"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import Confetti from 'react-confetti'
 
 interface GameProps {
     gameID: string
@@ -14,7 +15,7 @@ function Game({ gameID, handleID }: GameProps) {
     }
 
     async function postMove({ position }: { position: number }) {
-        const res = await fetch('/move/' + gameID, {
+        await fetch('/move/' + gameID, {
             method: "POST",
             headers: { "content-Type": "application/json" },
             body: JSON.stringify({ position })
@@ -61,9 +62,14 @@ function Game({ gameID, handleID }: GameProps) {
     }
 
     const statusClass = new Map<string, string>()
-    statusClass.set('red', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-red-500")
-    statusClass.set('yellow', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-yellow-200")
+    statusClass.set('Red', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-red-500")
+    statusClass.set('Yellow', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-yellow-200")
     statusClass.set('none', "aspect-square border-2 rounded-full border-blue-700 bg-amber-50")
+
+    const winClass = new Map<string,string>()
+    winClass.set('Red', 'z-50 absolute text-9xl  text-red-500 text-shadow-lg text-shadow-stone-950 animate-pulse') 
+    winClass.set('Yellow', 'z-50 absolute text-9xl  text-yellow-200 text-shadow-lg text-shadow-stone-950 animate-pulse')
+    winClass.set('Tie', 'z-50 absolute text-9xl  text-Black text-shadow-lg text-shadow-stone-950 animate-pulse')
 
 
     if (isPending) { return <div>Game is loading</div> }
@@ -72,8 +78,9 @@ function Game({ gameID, handleID }: GameProps) {
         return (
             <>
                 <div className="bg-black flex flex-col items-center justify-center w-screen h-screen ">
-
-                    <div className={state.currentPlayer == "red" ?
+                    {state.winner && <h1 className={winClass.get(state.winner)}>{state.winner==='Tie'? "Tie Game": state.winner + ' Wins!'}</h1>}
+                    {(state.winner === 'Red' || state.winner ==='Yellow') ? <Confetti/> : ''}
+                    <div className={state.currentPlayer == "Red" ?
                         'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-500 to-blue-800 p-2 border-red-500 border-4 rounded-xl' :
                         'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-500 to-blue-800 p-2 border-yellow-200 border-4 rounded-xl'}>
                         {state.board.map((e, i) => <div className={statusClass.get(e)}
