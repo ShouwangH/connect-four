@@ -7,6 +7,7 @@ interface LobbyProps {
 function Lobby({handleID}: LobbyProps) {
 
 
+
     async function listGame() {
         const res = await fetch('/games')
         return await res.json()
@@ -26,6 +27,7 @@ function Lobby({handleID}: LobbyProps) {
     })
 
     const games = data
+    console.log(games)
 
     const createGame = useMutation({
         mutationFn: newGame,
@@ -38,14 +40,20 @@ function Lobby({handleID}: LobbyProps) {
     }
 
     if (isPending) { return <div>Looking for Games</div> }
-    else {
+    else if (error) {return <div>Error finding Games</div>}
+    else    {
         return (
-            <div className="flex flex-col items-center justify-center h-screen w-screen gap-8">
-                <button onClick={() => handleCreate()} className='border rounded-xl p-3'>Create Game</button>
-                <label className="flex flex-col">
-                    Select a game:
-                    <select className="justify-center" onInput={(e)=>handleID(e.target.value)}>
-                        {games.map(id => <option value={id} key={id}>{id}</option>)}
+            <div className="flex flex-col bg-black text-gray-400 items-center justify-center h-screen w-screen gap-8">
+                <div className="flex gap-2">
+                <h1 className='text-4xl text-red-500'>Connect </h1>
+                <h1 className='text-4xl animate-bounce text-yellow-200'> Four</h1>
+                </div>
+                <button onClick={() => handleCreate()} className='border text-white rounded-xl p-3 bg-red-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-200 hover:text-black'>Create Game</button>
+                <label className="flex flex-col items-center">
+                    {(games[0]) ? "Select a game:": "No active games"}
+                    <select className="justify-center" onChange={(e)=>handleID(e.target.value)}>
+                        <option></option>
+                        {games.map((id:string) => <option value={id} key={id}>{id}</option>)}
                     </select>
                 </label>
 

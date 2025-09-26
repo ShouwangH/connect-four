@@ -1,44 +1,47 @@
 import express from 'express'
 import ViteExpress from 'vite-express'
-import { initialGameState, makeMove, type GameState, createGame } from './connectfour'
+import { initialGameState, makeMove, createGame, type GameState } from './connectfour'
+import {getGames, startGame, retrieveGame, playGame} from './index'
 
 
 const app = express()
 app.use(express.json())
 
-let games = new Map<string, GameState>()
 
-app.get("/game/:id", (req,res)=>{
+app.get("/game/:id", async (req,res)=>{
     const id = req.params.id
-    res.json(games.get(id))
+    let selectGame = await retrieveGame(id)
+    res.json(selectGame)
 })
 
-app.post("/create", (req,res)=>{
+app.post("/create", async (_,res)=>{
     const newGame = createGame()
-    games.set(newGame.id,newGame)
+    await startGame(newGame)
     res.json(newGame)
 })
 
-app.post("/move/:id", (req,res)=>{
+app.post("/move/:id", async (req,res)=>{
     const movePos = req.body.position
     const id = req.params.id
-    let updateGame = structuredClone(games.get(id))
+    let updateGame:GameState = await retrieveGame(id)
     updateGame = makeMove(movePos,updateGame)
-    games.set(id,updateGame)
+    await playGame(updateGame)
     res.json(updateGame)
 })
 
-app.get('/reset/:id', (req,res)=>{
+app.get('/reset/:id', async (req,res)=>{
     const id = req.params.id
-    let resetGame = structuredClone(games.get(id))
-    resetGame = {...initialGameState, id:id}
-    games.set(id,resetGame)
+    let resetGame = {...initialGameState, id:id}
+    console.log(resetGame)
+    await playGame(resetGame)
     res.json(resetGame)
 })
 
-app.get('/games', (req,res)=>{
-    const gamesArr = [...games.keys()]
+app.get('/games', async (_,res)=>{
+    const gamesArr = await getGames()
     res.json(gamesArr)
 })
 
 ViteExpress.listen(app, 3000, ()=> console.log("C4 server is listening..."))
+
+
