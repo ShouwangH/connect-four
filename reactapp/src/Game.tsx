@@ -2,13 +2,39 @@ import './App.css'
 import { type GameState } from "./connectfour"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Confetti from 'react-confetti'
+import { clientSocket } from './server'
+import { useEffect} from 'react'
 
 interface GameProps {
     gameID: string
     handleID: (id: string) => void
 }
 
+
+
 function Game({ gameID, handleID }: GameProps) {
+  const queryClient = useQueryClient()
+
+    useEffect(() => {
+    clientSocket.connect()
+ 
+    clientSocket.on('connection', (socket)=> {
+        console.log(`joining ${gameID}`)
+        socket.join(gameID)
+    })
+ 
+    clientSocket.on('gameStateUpdate',(newGameState:GameState)=>{
+        queryClient.setQueryData(['game'],newGameState)})
+
+    return () => {
+      clientSocket.off("gameStateUpdate");
+      clientSocket.disconnect()
+    };
+  }, []);
+
+
+
+
     async function fetchGame() {
         const res = await fetch('/game/' + gameID)
         return await res.json()
@@ -27,7 +53,7 @@ function Game({ gameID, handleID }: GameProps) {
         return await res.json()
     }
 
-    const queryClient = useQueryClient()
+    
 
     const { isPending, error, data } = useQuery({
         queryKey: ['game'],

@@ -5,9 +5,6 @@ interface LobbyProps {
     handleID: (id: string) => void
 }
 function Lobby({handleID}: LobbyProps) {
-
-
-
     async function listGame() {
         const res = await fetch('/games')
         return await res.json()
@@ -27,7 +24,6 @@ function Lobby({handleID}: LobbyProps) {
     })
 
     const games = data
-    console.log(games)
 
     const createGame = useMutation({
         mutationFn: newGame,
@@ -50,9 +46,9 @@ function Lobby({handleID}: LobbyProps) {
                 </div>
                 <button onClick={() => handleCreate()} className='border text-white rounded-xl p-3 bg-red-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-200 hover:text-black'>Create Game</button>
                 <label className="flex flex-col items-center">
-                    {(games[0]) ? "Select a game:": "No active games"}
+                    
                     <select className="justify-center" onChange={(e)=>handleID(e.target.value)}>
-                        <option></option>
+                        <option className="text-center">{(games[0]) ? "Select a game:": "No active games"}</option>
                         {games.map((id:string) => <option value={id} key={id}>{id}</option>)}
                     </select>
                 </label>
