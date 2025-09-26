@@ -27,7 +27,6 @@ function Lobby({handleID}: LobbyProps) {
     })
 
     const games = data
-    console.log(games)
 
     const createGame = useMutation({
         mutationFn: newGame,
