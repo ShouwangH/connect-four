@@ -3,7 +3,6 @@ import './App.css'
 import Game from './Game'
 import Lobby from './Lobby'
 
-
 function App() {
   const [gameID, setGameID] = useState('')
 
