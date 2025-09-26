@@ -1,19 +1,20 @@
-import { useState } from "react"
-import { initialGameState, makeMove, type GameState } from "./connectfour"
+import './App.css'
+import { type GameState } from "./connectfour"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 interface GameProps {
-    gameID:string
+    gameID: string
+    handleID: (id: string) => void
 }
 
-function Game(gameID:GameProps) {
+function Game({ gameID, handleID }: GameProps) {
     async function fetchGame() {
-        const res = await fetch('/game/' + gameID.gameID)
+        const res = await fetch('/game/' + gameID)
         return await res.json()
     }
 
     async function postMove({ position }: { position: number }) {
-        const res = await fetch('/move/' + gameID.gameID, {
+        const res = await fetch('/move/' + gameID, {
             method: "POST",
             headers: { "content-Type": "application/json" },
             body: JSON.stringify({ position })
@@ -21,7 +22,7 @@ function Game(gameID:GameProps) {
     }
 
     async function resetGame() {
-        const res = await fetch('/reset/' + gameID.gameID)
+        const res = await fetch('/reset/' + gameID)
         return await res.json()
     }
 
@@ -59,25 +60,33 @@ function Game(gameID:GameProps) {
         resetting.mutate()
     }
 
-    console.log(state)
-
     const statusClass = new Map<string, string>()
-    statusClass.set('red', "aspect-square border-2 rounded-4xl border-blue-700 bg-yellow-200")
-    statusClass.set('yellow', "aspect-square border-2 rounded-4xl border-blue-700 bg-red-500")
-    statusClass.set('none', "aspect-square border-2 rounded-4xl border-blue-700 bg-amber-50")
+    statusClass.set('red', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-red-500")
+    statusClass.set('yellow', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-yellow-200")
+    statusClass.set('none', "aspect-square border-2 rounded-full border-blue-700 bg-amber-50")
+
 
     if (isPending) { return <div>Game is loading</div> }
-    else {
+    else if (error) { return <div>Game failed to load</div>}
+    {
         return (
-            <div className="bg-black flex items-center justify-center w-screen h-screen ">
-                <div className="w-200 h-200 grid grid-flow-col grid-rows-6">
-                    {state.board.map((e, i) => <div className={statusClass.get(e)}
-                        key={i} onClick={() => handleClick(i)}></div>)}
-                    <button className="border rounded-2xl p-2 m-4 bg-blue-900 text-blue-300" onClick={() => handleReset()}>Reset</button>
+            <>
+                <div className="bg-black flex flex-col items-center justify-center w-screen h-screen ">
+
+                    <div className={state.currentPlayer == "red" ?
+                        'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-500 to-blue-800 p-2 border-red-500 border-4 rounded-xl' :
+                        'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-500 to-blue-800 p-2 border-yellow-200 border-4 rounded-xl'}>
+                        {state.board.map((e, i) => <div className={statusClass.get(e)}
+                            key={i} onClick={() => handleClick(i)}></div>)}
+                    </div>
+                    <div>
+                        <button className="m-4 border text-white rounded-xl text-3xl p-3 bg-red-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-200 hover:text-black" onClick={() => handleReset()}>Reset</button>
+                        <button className="border text-white rounded-xl text-3xl p-3 bg-red-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-200 hover:text-black" onClick={() => handleID('')}>Lobby</button>
+                    </div>
+                    <div className="text-gray-50">Game: {state.id}</div>
                 </div>
 
-
-            </div>)
+            </>)
     }
 }
 

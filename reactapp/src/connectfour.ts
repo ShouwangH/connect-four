@@ -1,7 +1,7 @@
 export type GameState = {
     currentPlayer: Player
     board: string[]
-    winner: Player | undefined
+    winner: Player | null
     id:string
 }
 
@@ -9,7 +9,7 @@ type Player = 'red' | 'yellow'
 
 export const initialGameState: GameState = {
     currentPlayer: 'red',
-    winner: undefined,
+    winner: null,
     board: Array(42).fill('none'),
     id: ""
 }
