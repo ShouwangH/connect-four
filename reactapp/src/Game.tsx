@@ -84,18 +84,18 @@ function handleReset() {
 }
 
 const hoverClass = new Map<string, string>()
-hoverClass.set("Red", "aspect-square border-2 rounded-full border-blue-700 bg-red-300 opacity-70")
-hoverClass.set("Yellow", "aspect-square border-2 rounded-full border-blue-700 bg-yellow-200 opacity-70")
+hoverClass.set("Red", "aspect-square border-2 rounded-full border-blue-700 bg-radial-[at_25%_25%] from-red-500 to-red-700 to-75% opacity-70 animate-pulse")
+hoverClass.set("Yellow", "aspect-square border-2 rounded-full border-blue-700 bg-radial-[at_25%_25%] from-yellow-200 to-yellow-500 opacity-70 animate-pulse")
 
 
 const statusClass = new Map<string, string>()
-statusClass.set('Red', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-red-500")
-statusClass.set('Yellow', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-yellow-300")
+statusClass.set('Red', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-radial-[at_25%_25%] from-red-500 to-red-700 to-75% inset-shadow-sm")
+statusClass.set('Yellow', "bounce-in-top aspect-square border-2 rounded-full border-blue-700 bg-radial-[at_25%_25%] from-yellow-200 to-yellow-500 to-75% inset-shadow-sm")
 statusClass.set('none', "aspect-square border-2 rounded-full border-blue-700 bg-amber-50")
 
 const winClass = new Map<string, string>()
-winClass.set('Red', 'z-50 absolute text-9xl  text-red-500 text-shadow-lg text-shadow-stone-950 animate-pulse')
-winClass.set('Yellow', 'z-50 absolute text-9xl  text-yellow-300 text-shadow-lg text-shadow-stone-950 animate-pulse')
+winClass.set('Red', 'z-50 absolute text-9xl  text-red-500 text-shadow-lg text-shadow-red-200 animate-pulse')
+winClass.set('Yellow', 'z-50 absolute text-9xl  text-yellow-300 text-shadow-lg text-shadow-yellow-500 animate-pulse')
 winClass.set('Tie', 'z-50 absolute text-9xl  text-Black text-shadow-lg text-shadow-stone-950 animate-pulse')
 
 function handleHover(index:number) {
@@ -123,17 +123,16 @@ else if (error) { return <div>Game failed to load</div> }
             <div className="bg-black flex flex-col items-center justify-center w-screen h-screen ">
                 {state.winner && <h1 className={winClass.get(state.winner)}>{state.winner === 'Tie' ? "Tie Game" : state.winner + ' Wins!'}</h1>}
                 {(state.winner === 'Red' || state.winner === 'Yellow') ? <Confetti /> : ''}
-                <div className={state.currentPlayer == "Red" ?
-                    'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-500 to-blue-800 p-2 border-red-500 border-4 rounded-xl' :
-                    'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-500 to-blue-800 p-2 border-yellow-300 border-4 rounded-xl'}>
+                <div className=
+                    'h-2/3 grid grid-flow-col grid-rows-6 bg-linear-to-t from-blue-800 to-blue-500 p-2 border-4 rounded-xl drop-shadow-xl drop-shadow-blue-800'> 
                     {state.board.map((e, i) => <div className={i===hoverIndex ? hoverClass.get(state.currentPlayer) :statusClass.get(e)}
-                        key={i} onClick={() => handleClick(i)} onMouseEnter={()=>handleHover(i)} onMouseLeave={()=>setHoverIndex(null)}>{i}</div>)}
+                        key={i} onClick={() => handleClick(i)} onMouseEnter={()=>handleHover(i)} onMouseLeave={()=>setHoverIndex(null)}></div>)}
                 </div>
                 <div>
-                    <button className="m-4 border text-white rounded-xl text-3xl p-3 bg-red-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-300 hover:text-black" onClick={() => handleReset()}>Reset</button>
-                    <button className="border text-white rounded-xl text-3xl p-3 bg-red-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-300 hover:text-black" onClick={() => handleID('')}>Lobby</button>
+                    <button className="shadow-xl shadow-rose-500 font-mono m-7 border text-white rounded-xl text-3xl p-3 bg-red-500 transition delay-50 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-300 hover:shadow-amber-200 hover:text-black" onClick={() => handleReset()}>Reset</button>
+                    <button className="shadow-xl shadow-rose-500 font-mono border text-white rounded-xl text-3xl p-3 bg-red-500 transition delay-50 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-300 hover:shadow-amber-200 hover:text-black" onClick={() => handleID('')}>Lobby</button>
                 </div>
-                <div className="text-gray-50">Game: {state.id}</div>
+                <div className="text-gray-50 font-mono">Game: {state.id}</div>
             </div>
 
         </>)
