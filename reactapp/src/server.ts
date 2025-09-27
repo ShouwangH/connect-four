@@ -51,6 +51,11 @@ app.get('/games', async (_,res)=>{
     res.json(gamesArr)
 })
 
+app.get('game/:id/users', (req,res)=>{
+    serverSocket.in(req.params.id).allSockets()
+    
+})
+
 serverSocket.on('connection', (socket)=>{
     console.log('User connected');
 

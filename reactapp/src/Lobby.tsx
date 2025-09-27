@@ -4,10 +4,8 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 interface LobbyProps {
     handleID: (id: string) => void
 }
+
 function Lobby({handleID}: LobbyProps) {
-
-
-
     async function listGame() {
         const res = await fetch('/games')
         return await res.json()
