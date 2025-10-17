@@ -8,6 +8,20 @@
       "when": 1758829902291,
       "tag": "0000_slow_molly_hayes",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1758830500000,
+      "tag": "0001_supabase_schema",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760716081425,
+      "tag": "0002_hard_cloak",
+      "breakpoints": true
     }
   ]
 }
